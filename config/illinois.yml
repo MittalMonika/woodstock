@@ -1,0 +1,119 @@
+# =============================================================================
+# Woodstock Institute — Tableau Extract Pipeline
+# Configuration for: ILLINOIS
+# =============================================================================
+# This file controls the whole pipeline. You should NOT need to edit any Python
+# code to change file names, column names, or years — change them here.
+#
+# To add a new state: copy this file, rename it (e.g. ohio.yml), and update
+# the paths + state name below.
+# =============================================================================
+
+state: Illinois
+state_code: IL
+
+# -----------------------------------------------------------------------------
+# WHERE THE FILES LIVE
+# -----------------------------------------------------------------------------
+# Point input_dir at the OneDrive folder holding the source files.
+# Point output_dir at wherever you want the .hyper extract written.
+paths:
+  input_dir: "./data/illinois"
+  output_dir: "./output"
+  output_name: "illinois_portal.hyper"
+
+# -----------------------------------------------------------------------------
+# THE SOURCE FILES
+# -----------------------------------------------------------------------------
+# Each entry describes one input file:
+#   file        - filename inside input_dir
+#   sheet       - Excel sheet name (omit for CSV files)
+#   key_columns - the columns used to join this file to HMDA
+#   prefix      - optional; prepended to non-key columns to avoid name clashes
+#
+# HMDA is the HUB — every other table joins to it.
+# -----------------------------------------------------------------------------
+
+sources:
+
+  # --- THE HUB -------------------------------------------------------------
+  # Produced by Yufei's R cleaning pipeline. Expected as CSV.
+  hmda:
+    file: "hmda_illinois_cleaned.csv"
+    format: csv
+    join_level: hub          # this is the base table
+    fips_column: "FIPS"      # 11-digit census tract FIPS
+    year_column: "Year"
+
+  # --- TRACT-LEVEL JOINS (on FIPS + Year) ----------------------------------
+  acs:
+    file: "Illinois_ACS_-_2018_to_2024.xlsx"
+    sheet: "Compilation"
+    format: excel
+    join_level: tract        # joins on tract FIPS + Year
+    fips_column: "FIPS"
+    year_column: "Year"
+    prefix: "acs_"
+
+  small_business:
+    file: "Portal_6YR_Illinois_Small_Business_Data_08_25_25.xlsx"
+    sheet: "Small Business"
+    format: excel
+    join_level: tract
+    fips_column: "FIPS Code"   # note: different name to HMDA's "FIPS"
+    year_column: "Year"        # note: has a trailing space in the raw file —
+                               # the loader strips whitespace automatically
+    prefix: "sb_"
+    on_duplicate: sum
+
+ 
+  small_business_top_lenders:
+    file: "Portal_6YR_Illinois_Small_Business_County.xlsx"
+    sheet: "Small Business by Top Lenders"
+    format: excel
+    join_level: side_table
+    county_fips_column: "County FIPS"
+    year_column: "Year"
+    prefix: ""
+
+  # --- SIDE TABLE: individual bank branches --------------------------------
+  
+  bank_branches:
+    file: "Portal_7YR_Illinois_Bank_Branches_Data.xlsx"
+    sheet: "Bank Branches"
+    format: excel
+    join_level: side_table
+    county_fips_column: "County FIPS"
+    year_column: "Year"        # trailing space in raw file — auto-stripped
+    prefix: ""
+
+  # --- SIDE TABLE (NOT merged into the main extract) -----------------------
+  
+  foreclosures:
+    file: "Portal_7YR_Illinois_Foreclosures_Data.xlsx"
+    sheet: "Foreclosures_Long_Form"
+    format: excel
+    join_level: side_table    # written as its own table, not merged
+    year_column: "Year"       # stored as TEXT in the raw file — auto-converted
+    prefix: ""
+
+# -----------------------------------------------------------------------------
+# YEARS TO INCLUDE
+# -----------------------------------------------------------------------------
+years:
+  start: 2018
+  end: 2024
+
+# -----------------------------------------------------------------------------
+# VALIDATION
+# -----------------------------------------------------------------------------
+# The pipeline checks these after merging and warns loudly if something looks
+# wrong — this is what stops bad data reaching the public dashboards.
+validation:
+  # Fail if the merged table has FEWER rows than HMDA (means rows were dropped)
+  fail_on_row_loss: true
+  # Fail if the merged table has MORE rows than HMDA (means a join fanned out
+  # and duplicated data — the classic silent bug that inflates numbers)
+  fail_on_row_gain: true
+  # Warn if any join matched less than this fraction of HMDA rows
+  min_match_rate: 0.50
