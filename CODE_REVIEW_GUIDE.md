@@ -1,7 +1,5 @@
 # Code Review Assignment — Woodstock Tableau Pipeline
 
-Each person owns **one file**. Read it, run the questions below against it, and
-write your findings in a shared doc under your name. Aim for 30–45 minutes.
 
 You don't need to be a Python expert. Most of the value is in checking the
 **logic and the assumptions**, not the syntax. If something isn't obvious from
