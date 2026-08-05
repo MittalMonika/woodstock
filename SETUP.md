@@ -48,7 +48,7 @@ You should see this structure:
 woodstock_pipeline/
 ├── config/          illinois.yml
 ├── src/             the Python code
-├── data/illinois/   the source files (5 real + 1 sample HMDA)
+├── data/illinois/   the source files (5 real + HMDA)
 ├── output/          extracts land here
 ├── logs/            run logs land here
 ├── requirements.txt
