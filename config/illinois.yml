@@ -2,7 +2,7 @@
 # Woodstock Institute — Tableau Extract Pipeline
 # Configuration for: ILLINOIS
 # =============================================================================
-# This file controls the whole pipeline. You should NOT need to edit any Python
+# This file controls the whole pipeline.  NO need to edit any Python
 # code to change file names, column names, or years — change them here.
 #
 # To add a new state: copy this file, rename it (e.g. ohio.yml), and update
