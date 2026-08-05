@@ -37,7 +37,7 @@ paths:
 sources:
 
   # --- THE HUB -------------------------------------------------------------
-  # Produced by Yufei's R cleaning pipeline. Expected as CSV.
+  #  fille in csv would be better as itt will take less time tto load the file. chnage changee format and filename
   hmda:
     file: "Portal_7YR_Illinois_HMDA_Data_7.16.25.xlsx"
     sheet: "HMDA"
