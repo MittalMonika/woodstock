@@ -1,0 +1,15 @@
+# =============================================================================
+# Woodstock Tableau Extract Pipeline — Python dependencies
+# =============================================================================
+# Python 3.10 or newer is required (tested on 3.12).
+#
+# Install everything with:
+#     pip install -r requirements.txt
+#
+
+pandas>=2.0            
+openpyxl>=3.1          
+PyYAML>=6.0            
+pantab>=5.0            
+tableauhyperapi>=0.0.19000   
+pyarrow>=14.0          
