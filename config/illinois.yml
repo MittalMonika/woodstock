@@ -41,7 +41,7 @@ sources:
   hmda:
     file: "Portal_7YR_Illinois_HMDA_Data_7.16.25.xlsx"
     sheet: "HMDA"
-    format: csv
+    format: excel
     join_level: hub          # this is the base table
     fips_column: "FIPS"      # 11-digit census tract FIPS
     year_column: "Year"
